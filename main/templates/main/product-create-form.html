@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title%} Sell | Shopping Den {% endblock %}
+{% block extrastyle %}
+    <link rel="stylesheet" href="{% static 'style/token-input.css' %}">
+    <style>
+        ul.token-input-list{
+    background: transparent;
+    width: 100%;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: #002005;
+    outline: none;
+    background: none;
+    font-size: 14px;
+}
+    ul.token-input-list li input{
+        background: transparent;
+    }
+    li.token-input-token p{
+        font-size: 14px;
+        color: white;
+        text-transform: capitalize;
+    }
+    li.token-input-token{
+        background: rgb(49, 233, 126);
+        border: none;
+    }
+    li.token-input-token span{
+        color: white;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="product-bg">
+        <div class="sell-form-box">
+            <p class="form-header">
+                What would u like to sell
+            </p>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="error-box">{{form.non_field_errors}}</div>
+                {% endif %}
+                <div class="form-group">
+                    <input type="text" name="name" class="style-form-control" placeholder=" "  value="{{form.name.value|default:''}}" maxlength="50" required>
+                    <label>Product name</label>
+                    <span class="help-text">maximum of 50 characters</span>
+                    {% if form.name.errors %}
+                        <span class="error-msg"> {{form.name.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <input type="number" name="price" class="style-form-control" placeholder=" " value="{{form.price.value|default:''}}" required>
+                    <label>Price</label>
+                    {% if form.price.errors %}
+                        <span class="error-msg"> {{form.price.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label style="font-size: 14px;"> Categories </label>
+                    <input type="text" name="category" id="token-input" class="token-input-control" placeholder=" " required>
+                    <span class="help-text">select maximum of 5 categories</span>
+                    {% if form.category.errors %}
+                        <span class="error-msg"> {{form.category.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label style="font-size: 14px;"> Description </label>
+                    <textarea name="description" class="style-textarea"  id="description-box"  cols="30" rows="5" value="{{form.description.value|default:''}}" maxlength="3000" required></textarea>
+                    <span class="help-text"><span>maximum of 3000 characters</span> <span><span id="num_changer">0</span>/3000</span></span>
+                    {% if form.description.errors %}
+                        <span class="error-msg"> {{form.description.errors}}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <input type="tel" name="phone_number" class="style-form-control" minlength="11" maxlength="11"value="{{form.phone_number.value|default:''}}"  placeholder=" ">
+                    <label>Phone Number</label>
+                    <span class="help-text">Leave Blank to use profile phone number</span>
+                    {% if form.phone_number.errors %}
+                        <span class="error-msg"> {{form.phone_number.errors}}</span>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="negotiable" id="flexCheckDefault" {% if form.negotiable.value %} checked {% endif %}
+                            >
+                            <label class="form-check-label " for="flexCheckDefault" style="font-size: 15px;">
+                            Negotiable
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <select name="location" class="product-dropdown" required>
+                                <option value="">Choose a Location</option>
+                                <option value="UNN">UNN</option>
+                                <option value="UNEC">UNEC</option>
+                            </select>
+                            {% if form.location.errors %}
+                                <span class="error-msg"> {{form.location.errors}}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="drag-area" id="drag-area" >
+                        <div class="icon"><i class="fa fa-cloud-upload"></i></div>
+                        <header id="drag-text">Drag and Drop Product Images</header>
+                        <span>OR</span>
+                        <button id="alt-file" style="cursor: pointer;">Browse Images</button>
+                        <input type="file" name="file" hidden id="file" accept="image/*" multiple required>
+                    </div>
+                    <span class="help-text">select maximum of 3 images</span>
+                    {% if form.file.errors %}
+                        <span class="error-msg"> {{form.file.errors}}</span>
+                    {% endif %}
+
+                </div>
+                <div class="image-box row" id="image-box">
+
+                </div>
+                <div class="text-center mb-2">
+                    <input type="submit" value="Post" class="login-btn w-100">
+                </div>
+                
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block extrascript %}
+<script src="{% static 'script/file-box.js' %}"></script>
+<script src="{% static  'script/jquery.tokeninput.js'%}"></script>
+<script>
+    $(document).ready(function () {
+        {% if tags %}
+        var skills = [
+        {% for tag in tags %}
+        {id:{{tag.id}},name: "{{tag.name}}"},
+        {% endfor %} 
+            ]
+    {% endif %}
+    $("#token-input").tokenInput(skills);
+  });
+</script>
+{% endblock %}
+    

@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% block title%}{{object.name}} | Shopping Den{% endblock %}
+{% block content %}
+    <div class="product-bg">
+        <div class="site-container">
+            <div class="detail-header text-center p-3">
+                <h3>{{object.name}}</h3>
+            </div>
+            <div class="row phone-hide">
+                <div class="col-md-2 p-2">
+                    {% for image in object.productimage_set.all %}
+                        <div class="detail-image" onclick="changeimg(this)">
+                            <img src="{{image.image.url}}" alt="" class="product-img">
+                        </div>
+                    {% endfor %}
+                   
+
+                </div>
+                <div class="col-md-6 p-2">
+                    <img src="{{object.first_image.image.url}}" alt="" id="big-img" class="product-img">
+                </div>
+                <div class="col-md-4 p-2">
+                    <div class="preferences-box">
+                        <ul class="list-group list-group-flush product-container-bg" style="border-radius: var(--product-container-radius);">
+                            <li class="list-group-item product-container-bg " >
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Price:
+                                    </div>
+                                    <div class="col-6 value">
+                                        NGN {{object.price}}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Location:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {{object.location}}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Available:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {% if object.available %}
+                                            <i class="fa fa-check text-success"></i>
+                                        {% else %}
+                                            <i class="fa fa-close text-danger"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Negotiable:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {% if object.negotiable %}
+                                            <i class="fa fa-check text-success"></i>
+                                        {% else %}
+                                            <i class="fa fa-close text-danger"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Date Uploaded:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {{object.date_uploaded|timesince}} ago
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Seller Contact:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {{object.phone_number}}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        <a href="tel:{{object.adjusted_phone_number}}" class="text-success detail-contact-link"><i class="fa fa-phone"></i></a>
+                                    </div>
+                                    <div class="col-6 value">
+                                        <a href="https://wa.me/{{object.adjusted_phone_number}}?text= i want to buy IphoneX from shopping den" class="text-success detail-contact-link"><i class="fa fa-whatsapp"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            {% if request.user == object.user %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Expiring date:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {{object.expiring_date}}
+                                    </div>
+                                </div>
+                            </li>
+                            {% if not object.is_active %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                   <div class="col-12">
+                                       <span class="error-msg">
+                                           post would be deleted one month after expring date if not activated
+                                       </span>
+                                   </div>
+                                </div>
+                            </li>
+                            {% endif %}
+                            
+                            {% endif %}
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-show mt-2 mb-2">
+                <div class="row">
+                    <div class="col-md-8 mb-2">
+                        <div id="carouselExampleControls" class="carousel slide detail-carousel" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                {% for image in object.productimage_set.all %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{image.image.url}}" class="d-block w-100" alt="...">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                            <div class="preferences-box">
+                                <ul class="list-group list-group-flush product-container-bg" style="border-radius: var(--product-container-radius);">
+                                    <li class="list-group-item product-container-bg " >
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Price:
+                                            </div>
+                                            <div class="col-6 value">
+                                                NGN {{object.price}}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Location:
+                                            </div>
+                                            <div class="col-6 value">
+                                                {{object.location}}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Available:
+                                            </div>
+                                            <div class="col-6 value">
+                                                {% if object.available %}
+                                                    <i class="fa fa-check text-success"></i>
+                                                {% else %}
+                                                    <i class="fa fa-close text-danger"></i>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Negotiable:
+                                            </div>
+                                            <div class="col-6 value">
+                                                {% if object.negotiable %}
+                                                    <i class="fa fa-check text-success"></i>
+                                                {% else %}
+                                                    <i class="fa fa-close text-danger"></i>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Date Uploaded:
+                                            </div>
+                                            <div class="col-6 value">
+                                                {{object.date_uploaded|timesince}} ago
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Seller Contact:
+                                            </div>
+                                            <div class="col-6 value">
+                                                {{object.phone_number}}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                <a href="tel:{{object.adjusted_phone_number}}" class="text-success detail-contact-link"><i class="fa fa-phone"></i></a>
+                                            </div>
+                                            <div class="col-6 value">
+                                                <a href="https://wa.me/{{object.adjusted_phone_number}}?text= i want to buy IphoneX from shopping den" class="text-success detail-contact-link"><i class="fa fa-whatsapp"></i></a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% if request.user == object.user %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-6 title">
+                                                Expiring date:
+                                            </div>
+                                            <div class="col-6 value">
+                                                {{object.expiring_date}}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% if not object.is_active %}
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                           <div class="col-12">
+                                               <span class="error-msg">
+                                                   post would be deleted one month after expring date if not activated
+                                               </span>
+                                           </div>
+                                        </div>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% endif %}
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div class="detail-description product-container-bg">
+                        <h4 >Description</h4>
+                        <p class="pt-2 pb-2">{{object.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+        

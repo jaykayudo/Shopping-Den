@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title%}{{request.user.email}} Profile | Shopping Den {% endblock %}
+{% block content %}
+    <div class="product-bg">
+        <div class="site-container">
+            <div class="row mt-4 mb-4">
+                <div class="col-md-6 p-3">
+                    <div class="detail-description product-container-bg">
+                        <h4> User Details</h4>
+                        <ul class="list-group list-group-flush product-container-bg">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Email Address:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {{request.user.email}}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Phone Number:
+                                    </div>
+                                    <div class="col-6 value">
+                                        {{request.user.phone_number|default:"Admin"}}
+                                    </div>
+                                </div>
+                            </li>
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                            <li class="list-group-item">
+                                
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        Current Password:
+                                    </div>
+                                    <div class="col-6 ">
+                                        <input type="password" name="old_password" class="style-input" value="{{form.old_password.value|default:''}}" required>
+                                        {% if form.old_password.errors %}
+                                            <span class="error-msg">{{form.old_password.errors}}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                        New Password:
+                                    </div>
+                                    <div class="col-6 ">
+                                        <input type="password" name="new_password1" value="{{form.new_password1.value|default:''}}" class="style-input" required>
+                                        {% if form.new_password1.errors %}
+                                            <span class="error-msg">{{form.new_password1.errors}}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-6 title">
+                                       Confirm New Password:
+                                    </div>
+                                    <div class="col-6 ">
+                                        <input type="password" name="new_password2" value="{{form.new_password1.value|default:''}}" class="style-input" required>
+                                        {% if form.new_password2.errors %}
+                                            <span class="error-msg">{{form.new_password2.errors}}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="text-center">
+                                    <input type="submit" value="Update" class="login-btn">
+                                </div>
+                            </li>
+                            </form>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 p-3">
+                    <div class="detail-description mb-2">
+                        <h4> Saved Items</h4>
+                        <div class="row p-2 scroll-box">
+                            {% if saved_products %}
+                            {% for post in saved_products %}
+                                    <div class="col-md-4 col-6 p-2">
+                                        <div class="product-container">
+                                            <img src="{{post.product.first_image.image.url}}" alt="" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                                            <div class="product-content">
+                                                <p>{{post.product.name}}</p>
+                                                <div class="product-content-footer">
+                                                    <span class="price" style="word-break: break-all;">NGN {{post.product.price}}</span>
+                                                    <span class="product-buttons">
+                                                        <a href="{% url 'details' post.product.id %}" class="product-btn" title="view"><i class="fa fa-external-link"></i></a>
+                                                        <a href="javascript::void()" class="product-btn" onclick="removeSavedItem({{post.id}})" title="remove"><i class="fa fa-close"></i></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                            <div class="col-md-12 flex-center">
+                                <h2 class="no-post">NO SAVED ITEM</h2>
+                            </div>
+                            {% endif %}
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div class="detail-description">
+                        <h4 >My Posts</h4>
+                        <div class="row mt-2">
+                            {% if posts %}
+                                {% for post in posts %}
+                                    <div class="col-md-2 col-6 p-2">
+                                        <div class="product-container">
+                                            <img src="{{post.first_image.image.url}}" alt="" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                                            <div class="product-content">
+                                                <p>{{post.name}}</p>
+                                                <div class="product-content-footer">
+                                                    <span class="price">NGN {{post.price}}</span>
+                                                    <span class="product-buttons">
+                                                        <a href="{% url 'details' post.id %}" class="product-btn" title="view"><i class="fa fa-external-link"></i></a>
+                                                        <a href="javascript::void()" class="product-btn" onclick="deletePost({{post.id}},'{{post.name}}')" title="delete"><i class="fa fa-trash"></i></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% else %}
+                                    <div class="col-md-12 flex-center">
+                                        <h2 class="text-center no-post">NO POST</h2>
+                                    </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

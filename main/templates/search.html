@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title%} Products | Shopping Den{% endblock %}
+{% block content %}
+    <div class="product-bg">
+        <div class="upper-tool-bar">
+            <form action="{% url 'search'%}" style="width: 60%;">
+                <input type="search" name="q" class="search-input" placeholder="What are you looking for?" >
+            </form>
+        </div>
+        <div class="flex-center site-container">
+            <p style="font-size: 25px; color:rgb(26, 177, 26);">Search result for : {{search}}</p>
+        </div>
+        <div class="mt-4" style="width: 90%; margin: auto; min-height: 60vh;">
+            {% if page_obj %}
+            <div class="row">
+                {% for product in page_obj%}
+                <div class="col-md-2 col-4 p-2">
+                    <div class="product-container">
+                        {% if product.first_image %}
+                            <img src="{{product.first_image.image.url}}" alt="{{product.name}}" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                        {% else %}
+                            <img src="" alt="{{product.name}}" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                        {% endif %}
+                        
+                        <div class="product-content">
+                            <p>{{ product.name }}</p>
+                            <div class="product-content-footer">
+                                <span class="price">NGN {{product.price}}</span>
+                                <span class="product-buttons">
+                                    <a href="{% url 'details' product.id %}" class="product-btn" title="view"><i class="fa fa-external-link"></i></a>
+                                    <a href="javascript::void()" class="product-btn" onclick="saveItem(this,{{product.id}})" title="save">
+                                    {% if request.saved_product %}
+                                        {% if product.id in request.saved_product %}
+                                        
+                                            <i class="fa fa-bookmark"></i>
+                                        {% else %}
+                                            <i class="fa fa-bookmark-o"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="fa fa-bookmark-o"></i>
+                                    {% endif %}
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+            </div>
+            {% else %}
+            <div class="flex-center">
+                <h1 class="no-post">No Search Found</h1>
+            </div>
+            {% endif %}
+            
+        </div>
+        <div class="flex-center">
+            {% if page_obj %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                {% endif %}
+                
+                {% for pagenum in page_obj.paginator.page_range %}
+                {% if page_obj.number == pagenum %}
+                    <li class="page-item{% if page_obj.number == pagenum %} active{% endif %}">
+                        <a class="page-link" href="?page={{pagenum}}">{{pagenum}}</a>
+                    </li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+        
+    </div>
+{% endblock %}

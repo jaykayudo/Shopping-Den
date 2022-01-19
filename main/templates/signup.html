@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title%} Create Account | Shopping Den {% endblock %}
+{% block content %}
+    
+    <div class="page-box">
+        <div class="row hidden-overflow">
+            <div class="col-md-6 phone-hide" style="padding: 0;">
+                <img src="..\static\style\images\Shopping Den Logo.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-6 shopping-form">
+                <div class="form-box ">
+                    <h2>Become a Member</h2>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" name="email" class="style-form-control" placeholder=" " value="{{form.email.value|default:''}}" required>
+                            <label>Email</label>
+                            {% if form.email.errors %}
+                                <span class="error-msg"> {{form.email.errors}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" name="phone_number" class="style-form-control" placeholder=" " value="{{form.phone_number.value|default:''}}" required>
+                            <label>Phone no</label>
+                            {% if form.phone_number.errors %}
+                                <span class="error-msg"> {{form.phone_number.errors}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="style-form-control" name='password1' placeholder=" " minlength="8" value="{{form.password1.value|default:''}}" required>
+                            <label>Password</label>
+                            {% if form.password1.errors %}
+                                <span class="error-msg"> {{form.password1.errors}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="style-form-control" name='password2' placeholder=" " minlength="8" value="{{form.password2.value|default:''}}" required>
+                            <label>Confirm Password</label>
+                            {% if form.password2.errors %}
+                                <span class="error-msg"> {{form.password2.errors}}</span>
+                            {% endif %}
+                        </div>
+                        <input type="submit" value="Get Started" class="login-btn">
+                        <div class="login_alt">
+                            <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+{% endblock %}

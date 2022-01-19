@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title%} Home | Shopping Den {% endblock %}
+{% block content %}
+    <div class="bg">
+        <div class="landing">
+            <div class="shoppingden">Shopping den</div>
+            <p class="tagline">Connecting buyers and sellers in and across the Den</p>
+            <div class="search" >
+                <form action="{% url 'search' %}" class="flex-box">
+                    <input  type="text" placeholder="What are you looking for?"  name="q" class="search-input" style="border-bottom-right-radius: 0px; border-top-right-radius: 0px;" >
+                    <button type="submit" class="home-btn" style="border-bottom-left-radius: 0px; border-top-left-radius: 0px;">
+                        <i class="fa fa-search" style="font-size: 20px; "></i>
+                    </button>
+                </form>
+            </div>
+            <form action="">
+                <select class="form-dropdown" name="location" onchange="locationFilter(this)">
+                    <option value="all" {% if request.session.location == "all"%}selected{% endif %}>Choose a Location</option>
+                    <option value="unn" {% if request.session.location == "unn"%}selected{% endif %}>UNN</option>
+                    <option value="unec" {% if request.session.location == "unec"%}selected{% endif %}>UNEC</option>
+                </select>
+            </form>
+           
+        </div>
+                   
+    </div>
+    <div class="others">
+        {% for tag in tags%}
+            <a href="{% url 'goods' %}?tag={{tag.name}}" class="category">
+            {{tag.name}}
+            </a>   
+        {% endfor %}
+    </div>
+    <div class="site-container">
+    {% if products %}
+    <div class="p-4">
+        <h2 class="home-product-header"> <span>Recent Posts</span> <span><a href="{% url 'goods' %}?filter=latest " class="small-link">see all</a></span></h2>
+        <div class="row mt-2">
+            {% for product in products%}
+            <div class="col-md-2 col-6 p-2">
+                <div class="product-container">
+                    {% if product.first_image %}
+                        <img src="{{product.first_image.image.url}}" alt="{{product.name}}" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                    {% else %}
+                        <img src="" alt="{{product.name}}" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                    {% endif %}
+                    
+                    <div class="product-content">
+                        <p>{{ product.name }}</p>
+                        <div class="product-content-footer">
+                            <span class="price">NGN {{product.price}}</span>
+                            <span class="product-buttons">
+                                <a href="{% url 'details' product.id %}" class="product-btn" title="view"><i class="fa fa-external-link"></i></a>
+                                <a href="javascript::void()" class="product-btn" onclick="saveItem(this,{{product.id}})" title="save">
+                                {% if request.saved_product %}
+                                    {% if product.id in request.saved_product %}
+                                    
+                                        <i class="fa fa-bookmark"></i>
+                                    {% else %}
+                                        <i class="fa fa-bookmark-o"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="fa fa-bookmark-o"></i>
+                                {% endif %}
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        
+        </div>
+    </div>
+    {% else %}
+        <div class="flex-center">
+            <h1 class="no-post">No Post Yet</h1>
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

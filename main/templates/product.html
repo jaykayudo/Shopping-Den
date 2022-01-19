@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title%} Products | Shopping Den{% endblock %}
+{% block content %}
+    <div class="product-bg">
+        <div class="upper-tool-bar">
+            <form action="{% url 'search'%}" style="width: 60%;">
+                <input type="search" name="q" class="search-input" placeholder="What are you looking for?" >
+            </form>
+            <form action="" id="form-filter">
+                <input type="hidden" name="page" value='{{page_obj.number}}'>
+                <select name="filter" class="product-dropdown" name="filter" onchange="sortFilter(this)">
+                    <option value="" {% if not request.session.filter %}selected{% endif %}>Sort by <i class="fa fa-filter"></i> </option>
+                    <option value="latest" {% if request.session.filter == "latest"%}selected{% endif %}>Latest</option>
+                    <option value="asc" {% if request.session.filter == "asc"%}selected{% endif %}>A - Z <i class="fa fa-sort-alpha-asc"></i> </option>
+                    <option value="desc" {% if request.session.filter == "desc"%}selected{% endif %}>Z - A</option>
+                    <option value="oldest" {% if request.session.filter == "oldest"%}selected{% endif %}>Oldest</option>
+                </select>
+            </form>
+        </div>
+        <div class="mt-4" style="width: 90%; margin: auto; min-height: 60vh;">
+            {% if page_obj %}
+            <div class="row">
+                {% for product in page_obj%}
+                <div class="col-md-2 col-6 p-2">
+                    <div class="product-container">
+                        {% if product.first_image %}
+                            <img src="{{product.first_image.image.url}}" alt="{{product.name}}" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                        {% else %}
+                            <img src="" alt="{{product.name}}" class="product-img" style="border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                        {% endif %}
+                        
+                        <div class="product-content">
+                            <p>{{ product.name }}</p>
+                            <div class="product-content-footer">
+                                <span class="price">NGN {{product.price}}</span>
+                                <span class="product-buttons">
+                                    <a href="{% url 'details' product.id %}" class="product-btn" title="view"><i class="fa fa-external-link"></i></a>
+                                    <a href="javascript::void()" class="product-btn" onclick="saveItem(this,{{product.id}})" title="save">
+                                    {% if request.saved_product %}
+                                        {% if product.id in request.saved_product %}
+                                        
+                                            <i class="fa fa-bookmark"></i>
+                                        {% else %}
+                                            <i class="fa fa-bookmark-o"></i>
+                                        {% endif %}
+                                    {% else %}
+                                        <i class="fa fa-bookmark-o"></i>
+                                    {% endif %}
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            
+            </div>
+            {% else %}
+                <div class="flex-center">
+                    <h1 class="no-post">No Post Yet</h1>
+                </div>
+            {% endif %}
+            
+        </div>
+        <div class="flex-center">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}&{% if request.session.filter %}filter={{request.session.filter}}{% endif %}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{page_obj.previous_page_number}}&{% if request.session.filter %}filter={{request.session.filter}}{% endif %}">{{page_obj.previous_page_number}}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                {% endif %}
+                
+                {% for pagenum in page_obj.paginator.page_range %}
+                {% if page_obj.number == pagenum %}
+                    <li class="page-item{% if page_obj.number == pagenum %} active{% endif %}">
+                        <a class="page-link" href="?page={{pagenum}}&{% if request.session.filter %}filter={{request.session.filter}}{% endif %}">{{pagenum}}</a>
+                    </li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}&{% if request.session.filter %}filter={{request.session.filter}}{% endif %}">{{page_obj.next_page_number}}</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}&{% if request.session.filter %}filter={{request.session.filter}}{% endif %}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+    </div>
+{% endblock %}

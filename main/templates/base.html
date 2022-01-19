@@ -1,0 +1,101 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style\bootstrap5\css\bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'style\font-awesome\font-awesome-4.7.0\css\font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'script\sweetalert\sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'style/style.css' %}">
+    <style>
+        
+        
+    </style>
+    {% block extrastyle %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="no-js" id="no-js">
+        <div class="loader"></div>
+    </div>
+    <nav class="navbar navbar-expand-lg  bg-shopping-den">
+        <div class="container-fluid site-container">
+          <a class="navbar-brand" href="#">Navbar</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+                <i class="fa fa-bars"></i>
+            </span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'sell' %}">Sell</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'goods' %}">Posts</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'about' %}">About</a>
+              </li>
+              {% if request.user.is_anonymous %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">SignIn</a>
+              </li>
+              {% else %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Profile
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item nav-flex-space" href="{% url 'profile' %}"><span><i class="fa fa-eye"></i></span><span>View Profile</span></a></li>
+                  <li><a class="dropdown-item nav-flex-space" href="{% url 'logout' %}"><span><i class="fa fa-sign-out"></i></span><span>Logout</span></a></li>
+                  
+                </ul>
+              </li>
+              {% endif %}
+            </ul>
+            
+          </div>
+        </div>
+      </nav>
+   {% for message in messages %}
+      <div class="w-100 p-4"  style="position: absolute; z-index: 1000;">
+        <div class="alert alert-{{message.tags}} alert-dismissible text-center" style=" width: 200px; margin: auto;" role="alert" id="liveAlert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+      {% endfor %}
+    {% block content %}
+    
+    {% endblock %}
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <p>
+                     &copy; 2021 Shopping Den. All Rights Reserved.<br/>
+                </p>
+            </div>
+        </div>
+      </footer>
+    <script src="{% static 'script\jquery.js' %}"></script>
+    <script src="{% static 'style\bootstrap5\js\bootstrap.min.js' %}"></script>
+    <script src="{% static 'script\sweetalert\sweetalert2.all.js' %}"></script>
+    <script src="{% static 'script\script.js' %}"></script>
+    <script>
+      window.onload = function(){
+        document.getElementById('no-js').classList.add('hide-js');
+      }
+        
+    </script>
+    {% block extrascript %}{% endblock %}
+</body>
+</html>

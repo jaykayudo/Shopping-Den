@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title%}Login | Shopping Den{% endblock %}
+{% block content %}
+    
+    <div class="page-box">
+        <div class="row hidden-overflow">
+            <div class="col-md-6 phone-hide" style="padding: 0;">
+                <img src="..\static\style\images\Shopping Den Logo.jpg" class="img-fluid">
+            </div>
+            <div class="col-md-6 shopping-form">
+                <div class="form-box ">
+                    <h2>Login</h2>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="error-box">{{form.non_field_errors}}</div>
+                        {% endif %}
+                        <div class="form-group">
+                            <input type="text" class="style-form-control" name="email_phone" value="{{form.email_phone.value|default:''}}" placeholder=" ">
+                            <label>Email/Phone</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="style-form-control" name='password' value="{{form.password.value|default:''}}" placeholder=" ">
+                            <label>Password</label>
+                        </div>
+                        <input type="submit" value="Login" class="login-btn">
+                    </form>
+                    <div class= "login_alt">
+                        <p>Don't have an account? <span><a href="{% url 'signup' %}">Sign up</a></span></p>
+                    </div>
+            </div>
+        </div>
+        
+        </div>
+    
+    </div>
+{% endblock %}
